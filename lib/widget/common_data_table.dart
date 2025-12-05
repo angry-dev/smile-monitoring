@@ -10,13 +10,13 @@ enum UserRole { admin, user }
 
 class CommonDataTable extends StatelessWidget {
   /// rows: [번호, 이름, 상병명, 진행상황, 특이사항여부(bool), 특이사항내용(String)]
-  final List<List<dynamic>> rows;
+  final List<dynamic> custList;
   final UserRole userRole;
   final OnEditSpecialNote? onEditSpecialNote;
 
   const CommonDataTable(
       {super.key,
-      required this.rows,
+      required this.custList,
       required this.userRole,
       this.onEditSpecialNote});
   @override
@@ -73,9 +73,9 @@ class CommonDataTable extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: rows.length,
+            itemCount: custList.length,
             itemBuilder: (context, index) {
-              final row = rows[index];
+              final row = custList[index];
               return Table(
                 columnWidths: {
                   0: FixedColumnWidth(48.w),

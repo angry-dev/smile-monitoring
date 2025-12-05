@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomerRegisterDialog extends StatelessWidget {
+class BrokerRegisterDialog extends StatelessWidget {
   final TextEditingController codeController;
   final TextEditingController nameController;
   final VoidCallback onRegister;
   final VoidCallback onCancel;
 
-  const CustomerRegisterDialog({
+  const BrokerRegisterDialog({
     super.key,
     required this.codeController,
     required this.nameController,
