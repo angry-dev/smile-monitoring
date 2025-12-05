@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widget/logout_button.dart';
-import '../widget/common_data_table.dart';
+// import '../widget/common_data_table.dart';
 
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
@@ -14,20 +14,40 @@ class AdminHomePage extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text('환자 목록',
-                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold)),
-            SizedBox(height: 16.h),
-            const Expanded(
-              child: CommonDataTable(
-                rows: [
-                  ['1', '홍길동', '감기', '진행중', true],
-                  ['2', '김철수', '골절', '완료', true],
-                  ['3', '이영희', '두통', '진행중', false],
-                ],
-                userRole: UserRole.admin,
+            Expanded(
+              child: SizedBox(
+                height: 60.h,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // TODO: 고객 계정 생성 페이지로 이동
+                  },
+                  style: ElevatedButton.styleFrom(
+                    textStyle:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text('고객 계정 생성'),
+                ),
+              ),
+            ),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: SizedBox(
+                height: 60.h,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // TODO: 고객 리스트 페이지로 이동
+                  },
+                  style: ElevatedButton.styleFrom(
+                    textStyle:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                    backgroundColor: Colors.green,
+                  ),
+                  child: const Text('고객 리스트'),
+                ),
               ),
             ),
           ],

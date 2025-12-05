@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constant/app_prefs.dart';
 import 'admin_home_page.dart';
-import 'user_home_page.dart';
+import 'user_list_page.dart';
 import '../constant/app_constants.dart';
 
 /// Riverpod 상태관리: 현재 로그인 상태(없음/관리자/사용자)
@@ -71,7 +71,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     if (loginState == LoginState.admin) {
       return const AdminHomePage();
     } else if (loginState == LoginState.user) {
-      return const UserHomePage();
+      return const UserListPage();
     }
     return Scaffold(
       appBar: AppBar(title: const Text('로그인')),

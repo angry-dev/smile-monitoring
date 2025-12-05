@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widget/logout_button.dart';
 import '../widget/common_data_table.dart';
 
-class UserHomePage extends StatelessWidget {
-  const UserHomePage({super.key});
+class UserListPage extends StatelessWidget {
+  const UserListPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('사용자 홈'),
+        title: const Text('사용자 목록'),
         actions: const [LogoutButton()],
       ),
       body: Padding(
