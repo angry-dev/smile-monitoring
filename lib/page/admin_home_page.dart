@@ -88,9 +88,7 @@ class AdminHomePage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AdminListPage(
-                                    custList: List<dynamic>.from(custList),
-                                    code: code),
+                                builder: (context) => AdminListPage(code: code),
                               ),
                             );
                           }

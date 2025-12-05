@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/model/customer.dart';
 import 'package:flutter_app/widget/balloon_icon.dart';
 import 'package:flutter_app/widget/editable_special_note.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,14 +10,14 @@ typedef OnEditSpecialNote = void Function(int rowIdx, String newValue);
 enum UserRole { admin, user }
 
 class CommonDataTable extends StatelessWidget {
-  /// rows: [번호, 이름, 상병명, 진행상황, 특이사항여부(bool), 특이사항내용(String)]
-  final List<dynamic> custList;
+  /// customers: Customer 객체 리스트
+  final List<Customer> customers;
   final UserRole userRole;
   final OnEditSpecialNote? onEditSpecialNote;
 
   const CommonDataTable(
       {super.key,
-      required this.custList,
+      required this.customers,
       required this.userRole,
       this.onEditSpecialNote});
   @override
@@ -73,9 +74,9 @@ class CommonDataTable extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: custList.length,
+            itemCount: customers.length,
             itemBuilder: (context, index) {
-              final row = custList[index];
+              final customer = customers[index];
               return Table(
                 columnWidths: {
                   0: FixedColumnWidth(48.w),
@@ -89,37 +90,40 @@ class CommonDataTable extends StatelessWidget {
                 children: [
                   TableRow(
                     children: [
-                      for (int i = 0; i < 4; i++)
-                        Padding(
-                          padding: EdgeInsets.all(8.w),
-                          child: Text(row[i].toString(),
-                              style: TextStyle(fontSize: 13.sp)),
-                        ),
                       Padding(
                         padding: EdgeInsets.all(8.w),
-                        child: () {
-                          if (row[4] == true) {
-                            if (userRole == UserRole.admin) {
-                              return EditableSpecialNote(
-                                initialValue:
-                                    row.length > 5 ? row[5].toString() : '',
-                                onChanged: (value) {
-                                  if (onEditSpecialNote != null) {
-                                    onEditSpecialNote!(index, value);
-                                  }
-                                },
-                              );
-                            } else {
-                              return BalloonIcon(
-                                message: row.length > 5
-                                    ? row[5].toString()
-                                    : '특이사항 없음',
-                              );
-                            }
-                          } else {
-                            return const SizedBox.shrink();
-                          }
-                        }(),
+                        child: Text((index + 1).toString(),
+                            style: TextStyle(fontSize: 13.sp)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.w),
+                        child: Text(customer.name,
+                            style: TextStyle(fontSize: 13.sp)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.w),
+                        child: Text(customer.disease,
+                            style: TextStyle(fontSize: 13.sp)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.w),
+                        child: Text(customer.status,
+                            style: TextStyle(fontSize: 13.sp)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.w),
+                        child: customer.note.isNotEmpty
+                            ? (userRole == UserRole.admin
+                                ? EditableSpecialNote(
+                                    initialValue: customer.note,
+                                    onChanged: (value) {
+                                      if (onEditSpecialNote != null) {
+                                        onEditSpecialNote!(index, value);
+                                      }
+                                    },
+                                  )
+                                : BalloonIcon(message: customer.note))
+                            : const SizedBox.shrink(),
                       ),
                     ],
                   ),

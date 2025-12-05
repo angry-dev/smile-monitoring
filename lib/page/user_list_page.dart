@@ -22,11 +22,7 @@ class UserListPage extends StatelessWidget {
             SizedBox(height: 16.h),
             const Expanded(
               child: CommonDataTable(
-                custList: [
-                  ['1', '홍길동', '감기', '진행중', true],
-                  ['2', '김철수', '골절', '완료', false],
-                  ['3', '이영희', '두통', '진행중', false],
-                ],
+                customers: [],
                 userRole: UserRole.user,
               ),
             ),

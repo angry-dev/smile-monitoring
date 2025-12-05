@@ -1,6 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseService {
+  // 특정 code 문서의 cust_list 필드에 데이터 추가
+  Future<void> addCustToList(
+      {required String code, required Map<String, dynamic> custData}) async {
+    final docRef = _firestore.collection('customers').doc(code);
+    await docRef.update({
+      'cust_list': FieldValue.arrayUnion([custData])
+    });
+  }
+
   // 특정 code 문서의 필드 값 가져오기
   Future<dynamic> getCustomerField(
       {required String code, required String field}) async {
