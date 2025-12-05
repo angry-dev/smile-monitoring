@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/customer.dart';
 import 'package:flutter_app/page/cust_reg_page.dart';
-import 'package:flutter_app/service/firebase_service.dart';
 import 'package:flutter_app/widget/common_data_table.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widget/logout_button.dart';
@@ -22,18 +21,35 @@ class AdminListPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CustRegPage(code: code),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.person_add),
+              ),
+            ),
             Expanded(
-              child: FutureBuilder(
-                future: FirebaseService()
-                    .getCustomerField(code: code, field: 'cust_list'),
+              child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                stream: FirebaseFirestore.instance
+                    .collection('customers')
+                    .doc(code)
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (!snapshot.hasData) {
+                  if (!snapshot.hasData || snapshot.data?.data() == null) {
                     return const Center(child: Text('고객 데이터가 없습니다'));
                   }
-                  final custListRaw = snapshot.data ?? [];
+                  final data = snapshot.data!.data()!;
+                  final custListRaw = data['cust_list'] ?? [];
                   final customers = custListRaw is List
                       ? custListRaw
                           .map((e) =>

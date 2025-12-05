@@ -48,7 +48,7 @@ class CustRegPage extends StatelessWidget {
                   DropdownMenuItem(value: '서류준비중', child: Text('서류준비중')),
                   DropdownMenuItem(value: '서류작성중', child: Text('서류작성중')),
                   DropdownMenuItem(value: '접수완료', child: Text('접수완료')),
-                  DropdownMenuItem(value: '검사진행중', child: Text('검사진행중')),
+                  DropdownMenuItem(value: '청력검사진행중', child: Text('청력검사진행중')),
                   DropdownMenuItem(
                       value: '업무관련성 평가 진행중', child: Text('업무관련성 평가 진행중')),
                   DropdownMenuItem(value: '승인', child: Text('승인')),

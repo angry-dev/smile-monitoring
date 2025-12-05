@@ -8,8 +8,25 @@ import 'package:flutter_app/model/broker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widget/logout_button.dart';
 
-class AdminHomePage extends StatelessWidget {
+class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
+
+  @override
+  State<AdminHomePage> createState() => _AdminHomePageState();
+}
+
+class _AdminHomePageState extends State<AdminHomePage> {
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  String _searchText = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,31 +46,62 @@ class AdminHomePage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: IconButton(
-                    onPressed: () {
-                      final codeController = TextEditingController();
-                      final nameController = TextEditingController();
-                      showDialog(
-                        context: context,
-                        builder: (context) => BrokerRegisterDialog(
-                          codeController: codeController,
-                          nameController: nameController,
-                          onRegister: () async {
-                            final code = codeController.text.trim();
-                            final name = nameController.text.trim();
-                            if (code.isNotEmpty && name.isNotEmpty) {
-                              await FirebaseService()
-                                  .addCustomer(code: code, name: name);
-                            }
-                            Navigator.of(context).pop();
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 200.w,
+                        child: TextField(
+                          controller: _searchController,
+                          focusNode: _searchFocusNode,
+                          decoration: const InputDecoration(
+                            hintText: '고객 이름 검색',
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            border: OutlineInputBorder(),
+                          ),
+                          style: const TextStyle(fontSize: 14),
+                          onChanged: (value) {
+                            setState(() {
+                              _searchText = value.trim();
+                            });
                           },
-                          onCancel: () => Navigator.of(context).pop(),
+                          onSubmitted: (value) {
+                            setState(() {
+                              _searchText = value.trim();
+                            });
+                          },
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.person_add,
-                        size: 22, color: Colors.black),
-                    tooltip: '고객 등록',
+                      ),
+                      SizedBox(width: 8.w),
+                      IconButton(
+                        onPressed: () {
+                          final codeController = TextEditingController();
+                          final nameController = TextEditingController();
+                          showDialog(
+                            context: context,
+                            builder: (context) => BrokerRegisterDialog(
+                              codeController: codeController,
+                              nameController: nameController,
+                              onRegister: () async {
+                                final code = codeController.text.trim();
+                                final name = nameController.text.trim();
+                                if (code.isNotEmpty && name.isNotEmpty) {
+                                  await FirebaseService()
+                                      .addCustomer(code: code, name: name);
+                                }
+                                Navigator.of(context).pop();
+                              },
+                              onCancel: () => Navigator.of(context).pop(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.person_add,
+                            size: 22, color: Colors.black),
+                        tooltip: '고객 등록',
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -73,15 +121,21 @@ class AdminHomePage extends StatelessWidget {
                     return const Center(child: Text('고객 데이터가 없습니다'));
                   }
                   final docs = snapshot.data!.docs;
-                  final brokers = docs
+                  var brokers = docs
                       .map<Broker>((doc) => Broker.fromMap(doc.data()))
                       .toList();
+                  if (_searchText.isNotEmpty) {
+                    brokers = brokers
+                        .where((b) => b.name.contains(_searchText))
+                        .toList();
+                  }
                   return CustDataTable(
-                      brokers: brokers,
-                      onRowTap: (code, index) {
-                        FirebaseService()
-                            .getCustomerField(code: code, field: 'cust_list')
-                            .then((custList) {
+                    brokers: brokers,
+                    onRowTap: (code, index) {
+                      FirebaseService()
+                          .getCustomerField(code: code, field: 'cust_list')
+                          .then(
+                        (custList) {
                           if (custList != null) {
                             final code = brokers[index].code;
 
@@ -92,8 +146,10 @@ class AdminHomePage extends StatelessWidget {
                               ),
                             );
                           }
-                        });
-                      });
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ),
