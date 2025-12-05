@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "405077494000",
+    "project_id": "smile-monitoring",
+    "storage_bucket": "smile-monitoring.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405077494000:android:ce44a8d49f650052b8da35",
+        "android_client_info": {
+          "package_name": "com.lee.smile_monitoring"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG8BgyE-bt4zo2iJixJR86Qx_B3owROvo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
