@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../provider/customers_provider.dart';
 
 /// 고객 데이터 테이블: 이름, 계정 컬럼만 표시
 
@@ -7,8 +11,13 @@ import '../model/broker.dart';
 
 class CustDataTable extends StatelessWidget {
   final List<Broker> brokers;
+  final bool editMode;
   final void Function(String code, int index)? onRowTap;
-  const CustDataTable({super.key, required this.brokers, this.onRowTap});
+  const CustDataTable(
+      {super.key,
+      required this.brokers,
+      required this.editMode,
+      this.onRowTap});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,68 @@ class CustDataTable extends StatelessWidget {
                   onRowTap!(broker.code, index);
                 }
               },
-              trailing: const Icon(Icons.chevron_right),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (editMode)
+                    Consumer(
+                      builder: (context, ref, _) => IconButton(
+                        icon: const Icon(Icons.edit, size: 20),
+                        tooltip: '편집',
+                        onPressed: () async {
+                          final nameController =
+                              TextEditingController(text: broker.name);
+                          final codeController =
+                              TextEditingController(text: broker.code);
+                          final result = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('고객 정보 편집'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextField(
+                                    controller: nameController,
+                                    decoration:
+                                        const InputDecoration(labelText: '이름'),
+                                  ),
+                                  TextField(
+                                    controller: codeController,
+                                    decoration:
+                                        const InputDecoration(labelText: '코드'),
+                                  ),
+                                ],
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: const Text('취소'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: const Text('저장'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (result == true) {
+                            await FirebaseFirestore.instance
+                                .collection('customers')
+                                .doc(broker.code)
+                                .update({
+                              'name': nameController.text.trim(),
+                              'code': codeController.text.trim(),
+                            });
+                            ref.invalidate(customersProvider);
+                          }
+                        },
+                      ),
+                    ),
+                  const Icon(Icons.chevron_right),
+                ],
+              ),
               minVerticalPadding: 1.0,
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),

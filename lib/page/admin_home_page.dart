@@ -15,6 +15,7 @@ class AdminHomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final searchText = ref.watch(searchTextProvider);
     final customersAsync = ref.watch(customersProvider);
+    final editMode = ref.watch(editModeProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +82,13 @@ class AdminHomePage extends ConsumerWidget {
                             size: 22, color: Colors.black),
                         tooltip: '고객 등록',
                       ),
-                      IconButton(onPressed: () {}, icon: const Icon(Icons.edit))
+                      IconButton(
+                        onPressed: () {
+                          ref.read(editModeProvider.notifier).state = !editMode;
+                        },
+                        icon: Icon(editMode ? Icons.check : Icons.edit),
+                        tooltip: '편집',
+                      ),
                     ],
                   ),
                 ),
@@ -103,6 +110,7 @@ class AdminHomePage extends ConsumerWidget {
                   }
                   return CustDataTable(
                     brokers: filtered,
+                    editMode: editMode,
                     onRowTap: (code, index) {
                       FirebaseService()
                           .getCustomerField(code: code, field: 'cust_list')
