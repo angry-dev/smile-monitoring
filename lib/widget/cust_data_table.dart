@@ -98,7 +98,7 @@ class CustDataTable extends StatelessWidget {
                               'name': nameController.text.trim(),
                               'code': codeController.text.trim(),
                             });
-                            ref.invalidate(customersProvider);
+                            ref.invalidate(brokersProvider);
                           }
                         },
                       ),
@@ -114,7 +114,10 @@ class CustDataTable extends StatelessWidget {
                               .collection('customers')
                               .doc(broker.code)
                               .delete();
-                          ref.invalidate(customersProvider);
+                          ref.invalidate(brokersProvider);
+
+                          ref.read(deleteModeProvider.notifier).state =
+                              !deleteMode;
                         },
                       ),
                     ),

@@ -15,7 +15,7 @@ class AdminHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchText = ref.watch(searchTextProvider);
-    final customersAsync = ref.watch(customersProvider);
+    final customersAsync = ref.watch(brokersProvider);
     final editMode = ref.watch(editModeProvider);
     final deleteMode = ref.watch(deleteModeProvider);
 
@@ -71,10 +71,22 @@ class AdminHomePage extends ConsumerWidget {
                                 final name = nameController.text.trim();
                                 if (code.isNotEmpty && name.isNotEmpty) {
                                   await FirebaseService()
+                                      .deleteCustomerDoc(code: code);
+
+                                  await FirebaseService()
                                       .addCustomer(code: code, name: name);
-                                  ref.invalidate(customersProvider);
+                                  ref.invalidate(brokersProvider);
+
+                                  Navigator.of(context).pop();
+                                } else {
+                                  // Handle empty fields if necessary
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 1),
+                                      content: Text('코드와 이름을 모두 입력해주세요.'),
+                                    ),
+                                  );
                                 }
-                                Navigator.of(context).pop();
                               },
                               onCancel: () => Navigator.of(context).pop(),
                             ),
@@ -84,16 +96,16 @@ class AdminHomePage extends ConsumerWidget {
                             size: 22, color: Colors.black),
                         tooltip: '고객 등록',
                       ),
-                      IconButton(
-                        onPressed: () {
-                          ref.read(editModeProvider.notifier).state = !editMode;
-                          if (deleteMode) {
-                            ref.read(deleteModeProvider.notifier).state = false;
-                          }
-                        },
-                        icon: Icon(editMode ? Icons.check : Icons.edit),
-                        tooltip: '편집',
-                      ),
+                      // IconButton(
+                      //   onPressed: () {
+                      //     ref.read(editModeProvider.notifier).state = !editMode;
+                      //     if (deleteMode) {
+                      //       ref.read(deleteModeProvider.notifier).state = false;
+                      //     }
+                      //   },
+                      //   icon: Icon(editMode ? Icons.check : Icons.edit),
+                      //   tooltip: '편집',
+                      // ),
                       IconButton(
                         onPressed: () {
                           ref.read(deleteModeProvider.notifier).state =

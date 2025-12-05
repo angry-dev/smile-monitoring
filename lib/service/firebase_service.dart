@@ -1,6 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseService {
+  // 특정 문서 삭제
+  Future<void> deleteCustomerDoc({
+    required String code,
+  }) async {
+    await _firestore.collection('customers').doc(code).delete();
+  }
+
   // 특정 code 문서의 cust_list 필드에 데이터 추가
   Future<void> addCustToList(
       {required String code, required Map<String, dynamic> custData}) async {

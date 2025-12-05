@@ -114,14 +114,8 @@ class CommonDataTable extends StatelessWidget {
                         padding: EdgeInsets.all(8.w),
                         child: customer.note.isNotEmpty
                             ? (userRole == UserRole.admin
-                                ? EditableSpecialNote(
-                                    initialValue: customer.note,
-                                    onChanged: (value) {
-                                      if (onEditSpecialNote != null) {
-                                        onEditSpecialNote!(index, value);
-                                      }
-                                    },
-                                  )
+                                ? Text(customer.note,
+                                    style: TextStyle(fontSize: 13.sp))
                                 : BalloonIcon(message: customer.note))
                             : const SizedBox.shrink(),
                       ),
