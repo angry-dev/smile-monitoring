@@ -28,3 +28,4 @@ final searchTextProvider = StateProvider<String>((ref) => '');
 
 final editModeProvider = StateProvider<bool>((ref) => false);
 final deleteModeProvider = StateProvider<bool>((ref) => false);
+final selectedCustomerProvider = StateProvider<Customer?>((ref) => null);

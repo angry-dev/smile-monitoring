@@ -87,7 +87,7 @@ class CustRegPage extends StatelessWidget {
                       // Firestore에 추가
                       await FirebaseService()
                           .addCustToList(code: code, custData: custData);
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
                     },
                     child: const Text('등록'),
                   ),

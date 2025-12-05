@@ -9,17 +9,29 @@ typedef OnEditSpecialNote = void Function(int rowIdx, String newValue);
 
 enum UserRole { admin, user }
 
-class CommonDataTable extends StatelessWidget {
-  /// customers: Customer 객체 리스트
+typedef OnSelectedRowsChanged = void Function(Set<int> selectedRows);
+
+class CommonDataTable extends StatefulWidget {
   final List<Customer> customers;
   final UserRole userRole;
   final OnEditSpecialNote? onEditSpecialNote;
+  final OnSelectedRowsChanged? onSelectedRowsChanged;
 
-  const CommonDataTable(
-      {super.key,
-      required this.customers,
-      required this.userRole,
-      this.onEditSpecialNote});
+  const CommonDataTable({
+    super.key,
+    required this.customers,
+    required this.userRole,
+    this.onEditSpecialNote,
+    this.onSelectedRowsChanged,
+  });
+
+  @override
+  State<CommonDataTable> createState() => _CommonDataTableState();
+}
+
+class _CommonDataTableState extends State<CommonDataTable> {
+  int? selectedRow;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -74,54 +86,74 @@ class CommonDataTable extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: customers.length,
+            itemCount: widget.customers.length,
             itemBuilder: (context, index) {
-              final customer = customers[index];
-              return Table(
-                columnWidths: {
-                  0: FixedColumnWidth(48.w),
-                  1: const FlexColumnWidth(2),
-                  2: const FlexColumnWidth(2),
-                  3: const FlexColumnWidth(2),
-                  4: const FlexColumnWidth(3),
+              final customer = widget.customers[index];
+              final isSelected = selectedRow == index;
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (isSelected) {
+                      selectedRow = null;
+                    } else {
+                      selectedRow = index;
+                    }
+                  });
+                  if (widget.onSelectedRowsChanged != null) {
+                    widget.onSelectedRowsChanged!(
+                      selectedRow != null ? {selectedRow!} : <int>{},
+                    );
+                  }
                 },
-                border: TableBorder.symmetric(
-                    inside: BorderSide(color: Colors.grey.shade300)),
-                children: [
-                  TableRow(
+                child: Container(
+                  color: isSelected ? Colors.blue.withOpacity(0.2) : null,
+                  child: Table(
+                    columnWidths: {
+                      0: FixedColumnWidth(48.w),
+                      1: const FlexColumnWidth(2),
+                      2: const FlexColumnWidth(2),
+                      3: const FlexColumnWidth(2),
+                      4: const FlexColumnWidth(3),
+                    },
+                    border: TableBorder.symmetric(
+                        inside: BorderSide(color: Colors.grey.shade300)),
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(8.w),
-                        child: Text((index + 1).toString(),
-                            style: TextStyle(fontSize: 13.sp)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.w),
-                        child: Text(customer.name,
-                            style: TextStyle(fontSize: 13.sp)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.w),
-                        child: Text(customer.disease,
-                            style: TextStyle(fontSize: 13.sp)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.w),
-                        child: Text(customer.status,
-                            style: TextStyle(fontSize: 13.sp)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.w),
-                        child: customer.note.isNotEmpty
-                            ? (userRole == UserRole.admin
-                                ? Text(customer.note,
-                                    style: TextStyle(fontSize: 13.sp))
-                                : BalloonIcon(message: customer.note))
-                            : const SizedBox.shrink(),
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(8.w),
+                            child: Text((index + 1).toString(),
+                                style: TextStyle(fontSize: 13.sp)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.w),
+                            child: Text(customer.name,
+                                style: TextStyle(fontSize: 13.sp)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.w),
+                            child: Text(customer.disease,
+                                style: TextStyle(fontSize: 13.sp)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.w),
+                            child: Text(customer.status,
+                                style: TextStyle(fontSize: 13.sp)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.w),
+                            child: customer.note.isNotEmpty
+                                ? (widget.userRole == UserRole.admin
+                                    ? Text(customer.note,
+                                        style: TextStyle(fontSize: 13.sp))
+                                    : BalloonIcon(message: customer.note))
+                                : const SizedBox.shrink(),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               );
             },
           ),
