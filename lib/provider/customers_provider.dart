@@ -13,3 +13,4 @@ final customersProvider = FutureProvider<List<Broker>>((ref) async {
 final searchTextProvider = StateProvider<String>((ref) => '');
 
 final editModeProvider = StateProvider<bool>((ref) => false);
+final deleteModeProvider = StateProvider<bool>((ref) => false);

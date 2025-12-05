@@ -12,12 +12,15 @@ import '../model/broker.dart';
 class CustDataTable extends StatelessWidget {
   final List<Broker> brokers;
   final bool editMode;
+  final bool deleteMode;
   final void Function(String code, int index)? onRowTap;
-  const CustDataTable(
-      {super.key,
-      required this.brokers,
-      required this.editMode,
-      this.onRowTap});
+  const CustDataTable({
+    super.key,
+    required this.brokers,
+    required this.editMode,
+    required this.deleteMode,
+    this.onRowTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +103,21 @@ class CustDataTable extends StatelessWidget {
                         },
                       ),
                     ),
-                  const Icon(Icons.chevron_right),
+                  if (deleteMode)
+                    Consumer(
+                      builder: (context, ref, _) => IconButton(
+                        icon: const Icon(Icons.delete,
+                            size: 20, color: Colors.redAccent),
+                        tooltip: '삭제',
+                        onPressed: () async {
+                          await FirebaseFirestore.instance
+                              .collection('customers')
+                              .doc(broker.code)
+                              .delete();
+                          ref.invalidate(customersProvider);
+                        },
+                      ),
+                    ),
                 ],
               ),
               minVerticalPadding: 1.0,

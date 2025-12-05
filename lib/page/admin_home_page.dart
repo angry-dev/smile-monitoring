@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widget/logout_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../provider/customers_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdminHomePage extends ConsumerWidget {
   const AdminHomePage({super.key});
@@ -16,6 +17,7 @@ class AdminHomePage extends ConsumerWidget {
     final searchText = ref.watch(searchTextProvider);
     final customersAsync = ref.watch(customersProvider);
     final editMode = ref.watch(editModeProvider);
+    final deleteMode = ref.watch(deleteModeProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -85,9 +87,24 @@ class AdminHomePage extends ConsumerWidget {
                       IconButton(
                         onPressed: () {
                           ref.read(editModeProvider.notifier).state = !editMode;
+                          if (deleteMode) {
+                            ref.read(deleteModeProvider.notifier).state = false;
+                          }
                         },
                         icon: Icon(editMode ? Icons.check : Icons.edit),
                         tooltip: '편집',
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          ref.read(deleteModeProvider.notifier).state =
+                              !deleteMode;
+                          if (editMode) {
+                            ref.read(editModeProvider.notifier).state = false;
+                          }
+                        },
+                        icon: Icon(Icons.delete,
+                            color: deleteMode ? Colors.red : Colors.grey),
+                        tooltip: '삭제',
                       ),
                     ],
                   ),
@@ -111,6 +128,7 @@ class AdminHomePage extends ConsumerWidget {
                   return CustDataTable(
                     brokers: filtered,
                     editMode: editMode,
+                    deleteMode: deleteMode,
                     onRowTap: (code, index) {
                       FirebaseService()
                           .getCustomerField(code: code, field: 'cust_list')
