@@ -4,5 +4,7 @@ library;
 class AppConstants {
   static const String adminCode = 'admin';
   static const String userCode = 'user';
+  static const String testAdminCode = 'testadmin';
+  static const String testUserCode = 'testuser';
   static const String loginErrorMsg = '올바른 코드를 입력하세요.';
 }

@@ -1,40 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'admin_home_page.dart';
 import 'user_home_page.dart';
 import '../constant/app_constants.dart';
 
-class LoginPage extends StatefulWidget {
+final loginStateProvider = StateProvider<LoginState>((ref) => LoginState.none);
+
+enum LoginState { none, admin, user }
+
+class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
+
   @override
-  State<LoginPage> createState() => _LoginPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final TextEditingController codeController = TextEditingController();
+    final errorText = ref.watch(_errorTextProvider);
+    final loginState = ref.watch(loginStateProvider);
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _codeController = TextEditingController();
-  String? _errorText;
-
-  void _login() {
-    final code = _codeController.text.trim();
-    if (code == AppConstants.adminCode) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const AdminHomePage()),
-      );
-    } else if (code == AppConstants.userCode) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const UserHomePage()),
-      );
-    } else {
-      setState(() {
-        _errorText = AppConstants.loginErrorMsg;
-      });
+    void login() {
+      final code = codeController.text.trim();
+      if (code == AppConstants.adminCode ||
+          code == AppConstants.testAdminCode) {
+        ref.read(loginStateProvider.notifier).state = LoginState.admin;
+        ref.read(_errorTextProvider.notifier).state = null;
+      } else if (code == AppConstants.userCode ||
+          code == AppConstants.testUserCode) {
+        ref.read(loginStateProvider.notifier).state = LoginState.user;
+        ref.read(_errorTextProvider.notifier).state = null;
+      } else {
+        ref.read(_errorTextProvider.notifier).state =
+            AppConstants.loginErrorMsg;
+      }
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
+    if (loginState == LoginState.admin) {
+      return const AdminHomePage();
+    } else if (loginState == LoginState.user) {
+      return const UserHomePage();
+    }
     return Scaffold(
       appBar: AppBar(title: const Text('로그인')),
       body: Padding(
@@ -43,10 +47,10 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _codeController,
+              controller: codeController,
               decoration: InputDecoration(
                 labelText: '코드 입력',
-                errorText: _errorText,
+                errorText: errorText,
                 border: const OutlineInputBorder(),
               ),
             ),
@@ -54,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _login,
+                onPressed: login,
                 child: Text('로그인', style: TextStyle(fontSize: 18.sp)),
               ),
             ),
@@ -64,3 +68,5 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+final _errorTextProvider = StateProvider<String?>((ref) => null);
