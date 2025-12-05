@@ -1,4 +1,4 @@
-package com.example.flutter_app
+package com.lee.smile_monitoring
 
 import io.flutter.embedding.android.FlutterActivity
 
