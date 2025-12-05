@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widget/balloon_icon.dart';
+import 'package:flutter_app/widget/editable_special_note.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// 공통 표 위젯: 번호, 이름, 상병명, 진행상황, 특이사항
+typedef OnEditSpecialNote = void Function(int rowIdx, String newValue);
+
+enum UserRole { admin, user }
+
 class CommonDataTable extends StatelessWidget {
   /// rows: [번호, 이름, 상병명, 진행상황, 특이사항여부(bool), 특이사항내용(String)]
   final List<List<dynamic>> rows;
+  final UserRole userRole;
+  final OnEditSpecialNote? onEditSpecialNote;
 
-  const CommonDataTable({super.key, required this.rows});
+  const CommonDataTable(
+      {super.key,
+      required this.rows,
+      required this.userRole,
+      this.onEditSpecialNote});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -86,13 +97,29 @@ class CommonDataTable extends StatelessWidget {
                         ),
                       Padding(
                         padding: EdgeInsets.all(8.w),
-                        child: (row[4] == true)
-                            ? BalloonIcon(
+                        child: () {
+                          if (row[4] == true) {
+                            if (userRole == UserRole.admin) {
+                              return EditableSpecialNote(
+                                initialValue:
+                                    row.length > 5 ? row[5].toString() : '',
+                                onChanged: (value) {
+                                  if (onEditSpecialNote != null) {
+                                    onEditSpecialNote!(index, value);
+                                  }
+                                },
+                              );
+                            } else {
+                              return BalloonIcon(
                                 message: row.length > 5
                                     ? row[5].toString()
                                     : '특이사항 없음',
-                              )
-                            : const SizedBox.shrink(),
+                              );
+                            }
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        }(),
                       ),
                     ],
                   ),

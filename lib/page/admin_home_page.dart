@@ -27,6 +27,7 @@ class AdminHomePage extends StatelessWidget {
                   ['2', '김철수', '골절', '완료', true],
                   ['3', '이영희', '두통', '진행중', false],
                 ],
+                userRole: UserRole.admin,
               ),
             ),
           ],
