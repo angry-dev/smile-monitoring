@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/provider/customers_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/customer.dart';
 
@@ -50,6 +51,9 @@ class _CustEditPageState extends ConsumerState<CustEditPage> {
     if (widget.onSave != null) {
       widget.onSave!(updated);
     }
+    // 편집모드 해제
+    final container = ProviderScope.containerOf(context, listen: false);
+    container.read(editModeProvider.notifier).state = false;
     Navigator.of(context).pop(updated);
   }
 

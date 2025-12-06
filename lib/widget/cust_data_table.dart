@@ -29,7 +29,7 @@ class CustDataTable extends StatelessWidget {
       child: ListView.separated(
         itemCount: brokers.length,
         separatorBuilder: (context, idx) =>
-            Divider(height: 1, color: Colors.grey.shade300),
+            Divider(height: 1.h, color: Colors.grey),
         itemBuilder: (context, index) {
           final broker = brokers[index];
           return SizedBox(

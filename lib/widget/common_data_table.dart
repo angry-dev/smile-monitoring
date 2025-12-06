@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/customer.dart';
 import 'package:flutter_app/widget/balloon_icon.dart';
-import 'package:flutter_app/widget/editable_special_note.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// 공통 표 위젯: 번호, 이름, 상병명, 진행상황, 특이사항
@@ -105,54 +104,59 @@ class _CommonDataTableState extends State<CommonDataTable> {
                     );
                   }
                 },
-                child: Container(
-                  color: isSelected ? Colors.blue.withOpacity(0.2) : null,
-                  child: Table(
-                    columnWidths: {
-                      0: FixedColumnWidth(48.w),
-                      1: const FlexColumnWidth(2),
-                      2: const FlexColumnWidth(2),
-                      3: const FlexColumnWidth(2),
-                      4: const FlexColumnWidth(3),
-                    },
-                    border: TableBorder.symmetric(
-                        inside: BorderSide(color: Colors.grey.shade300)),
-                    children: [
-                      TableRow(
+                child: Column(
+                  children: [
+                    Container(
+                      color: isSelected ? Colors.blue.withOpacity(0.2) : null,
+                      child: Table(
+                        columnWidths: {
+                          0: FixedColumnWidth(48.w),
+                          1: const FlexColumnWidth(2),
+                          2: const FlexColumnWidth(2),
+                          3: const FlexColumnWidth(2),
+                          4: const FlexColumnWidth(3),
+                        },
+                        border: TableBorder.symmetric(
+                            inside: BorderSide(color: Colors.grey.shade300)),
                         children: [
-                          Padding(
-                            padding: EdgeInsets.all(8.w),
-                            child: Text((index + 1).toString(),
-                                style: TextStyle(fontSize: 13.sp)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.w),
-                            child: Text(customer.name,
-                                style: TextStyle(fontSize: 13.sp)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.w),
-                            child: Text(customer.disease,
-                                style: TextStyle(fontSize: 13.sp)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.w),
-                            child: Text(customer.status,
-                                style: TextStyle(fontSize: 13.sp)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.w),
-                            child: customer.note.isNotEmpty
-                                ? (widget.userRole == UserRole.admin
-                                    ? Text(customer.note,
-                                        style: TextStyle(fontSize: 13.sp))
-                                    : BalloonIcon(message: customer.note))
-                                : const SizedBox.shrink(),
+                          TableRow(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(8.w),
+                                child: Text((index + 1).toString(),
+                                    style: TextStyle(fontSize: 13.sp)),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.w),
+                                child: Text(customer.name,
+                                    style: TextStyle(fontSize: 13.sp)),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.w),
+                                child: Text(customer.disease,
+                                    style: TextStyle(fontSize: 13.sp)),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.w),
+                                child: Text(customer.status,
+                                    style: TextStyle(fontSize: 13.sp)),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.w),
+                                child: customer.note.isNotEmpty
+                                    ? (widget.userRole == UserRole.admin
+                                        ? Text(customer.note,
+                                            style: TextStyle(fontSize: 13.sp))
+                                        : BalloonIcon(message: customer.note))
+                                    : const SizedBox.shrink(),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade300),
+                  ],
                 ),
               );
             },

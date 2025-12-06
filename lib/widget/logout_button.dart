@@ -14,9 +14,13 @@ class LogoutButton extends ConsumerWidget {
       icon: const Icon(Icons.logout),
       tooltip: '로그아웃',
       onPressed: () async {
-        // 상태 초기화 및 자동로그인 정보 삭제
         ref.read(loginStateProvider.notifier).state = LoginState.none;
         await AppPrefs.clearLoginRole();
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+          (route) => false,
+        );
       },
     );
   }

@@ -28,19 +28,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   void initState() {
     super.initState();
-    // 앱 실행 시 자동로그인 시도
-    _tryAutoLogin();
+    // 자동 로그인 로직 제거
   }
 
   /// SharedPreferences에 저장된 역할이 있으면 자동로그인 처리
-  Future<void> _tryAutoLogin() async {
-    final savedRole = await AppPrefs.getLoginRole();
-    if (savedRole == 'admin') {
-      ref.read(loginStateProvider.notifier).state = LoginState.admin;
-    } else if (savedRole == 'user') {
-      ref.read(loginStateProvider.notifier).state = LoginState.user;
-    }
-  }
+  // 자동 로그인 로직 제거
 
   /// 로그인 버튼 클릭 시 동작
   /// - 코드가 맞으면 상태/SharedPreferences에 역할 저장
@@ -53,11 +45,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       notifier.state = LoginState.admin;
       errorNotifier.state = null;
       await AppPrefs.setLoginRole('admin');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AdminHomePage()),
+      );
     } else if (code == AppConstants.userCode ||
         code == AppConstants.testUserCode) {
       notifier.state = LoginState.user;
       errorNotifier.state = null;
       await AppPrefs.setLoginRole('user');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const UserListPage()),
+      );
     } else {
       errorNotifier.state = AppConstants.loginErrorMsg;
     }

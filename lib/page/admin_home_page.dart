@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widget/logout_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../provider/customers_provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdminHomePage extends ConsumerWidget {
   const AdminHomePage({super.key});

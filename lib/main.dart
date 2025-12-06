@@ -4,20 +4,33 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'page/login_page.dart';
+import 'constant/app_prefs.dart';
+import 'page/admin_home_page.dart';
+import 'page/user_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // ✅ 중요
+    options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const ProviderScope(child: MyApp()));
+  final loginRole = await AppPrefs.getLoginRole();
+  runApp(ProviderScope(child: MyApp(loginRole: loginRole)));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String? loginRole;
+  const MyApp({super.key, this.loginRole});
 
   @override
   Widget build(BuildContext context) {
+    Widget home;
+    if (loginRole == 'admin') {
+      home = const AdminHomePage();
+    } else if (loginRole == 'user') {
+      home = const UserListPage();
+    } else {
+      home = const LoginPage();
+    }
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       minTextAdapt: true,
@@ -30,10 +43,9 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: child,
+          home: home,
         );
       },
-      child: const LoginPage(),
     );
   }
 }
