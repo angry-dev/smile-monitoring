@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/model/customer.dart';
 import 'package:flutter_app/widget/balloon_icon.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../constant/table_font_constants.dart';
 
 /// 공통 표 위젯: 번호, 이름, 상병명, 진행상황, 특이사항
 typedef OnEditSpecialNote = void Function(int rowIdx, String newValue);
@@ -51,33 +52,78 @@ class _CommonDataTableState extends State<CommonDataTable> {
               children: [
                 Padding(
                   padding: EdgeInsets.all(8.w),
-                  child: Text('번호',
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '번호',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                          fontWeight: FontWeight.bold,
+                          fontSize: TableFontConstants.header),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(8.w),
-                  child: Text('이름',
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '이름',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                          fontWeight: FontWeight.bold,
+                          fontSize: TableFontConstants.header),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(8.w),
-                  child: Text('상병명',
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '상병명',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                          fontWeight: FontWeight.bold,
+                          fontSize: TableFontConstants.header),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(8.w),
-                  child: Text('진행상황',
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '진행상황',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                          fontWeight: FontWeight.bold,
+                          fontSize: TableFontConstants.header),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(8.w),
-                  child: Text('특이사항',
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '특이사항',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                          fontWeight: FontWeight.bold,
+                          fontSize: TableFontConstants.header),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -123,32 +169,80 @@ class _CommonDataTableState extends State<CommonDataTable> {
                             children: [
                               Padding(
                                 padding: EdgeInsets.all(8.w),
-                                child: Text((index + 1).toString(),
-                                    style: TextStyle(fontSize: 13.sp)),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    (index + 1).toString(),
+                                    style: TextStyle(
+                                        fontSize: TableFontConstants.cell),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.w),
-                                child: Text(customer.name,
-                                    style: TextStyle(fontSize: 13.sp)),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    customer.name,
+                                    style: TextStyle(
+                                        fontSize: TableFontConstants.cell),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.w),
-                                child: Text(customer.disease,
-                                    style: TextStyle(fontSize: 13.sp)),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    customer.disease,
+                                    style: TextStyle(
+                                        fontSize: TableFontConstants.cell),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.w),
-                                child: Text(customer.status,
-                                    style: TextStyle(fontSize: 13.sp)),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    customer.status,
+                                    style: TextStyle(
+                                        fontSize: TableFontConstants.cell),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.w),
-                                child: customer.note.isNotEmpty
-                                    ? (widget.userRole == UserRole.admin
-                                        ? Text(customer.note,
-                                            style: TextStyle(fontSize: 13.sp))
-                                        : BalloonIcon(message: customer.note))
-                                    : const SizedBox.shrink(),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: customer.note.isNotEmpty
+                                      ? (widget.userRole == UserRole.admin
+                                          ? Text(
+                                              customer.note,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      TableFontConstants.cell),
+                                              textAlign: TextAlign.center,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            )
+                                          : Center(
+                                              child: BalloonIcon(
+                                                  message: customer.note)))
+                                      : const SizedBox.shrink(),
+                                ),
                               ),
                             ],
                           ),

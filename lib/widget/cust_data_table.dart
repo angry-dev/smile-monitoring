@@ -37,8 +37,8 @@ class CustDataTable extends StatelessWidget {
             child: ListTile(
               title: Text(broker.name,
                   style:
-                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
-              subtitle: Text(broker.code, style: TextStyle(fontSize: 13.sp)),
+                      TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
+              subtitle: Text(broker.code, style: TextStyle(fontSize: 11.sp)),
               onTap: () {
                 if (onRowTap != null) {
                   onRowTap!(broker.code, index);
