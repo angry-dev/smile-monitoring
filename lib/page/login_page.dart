@@ -5,6 +5,7 @@ import '../constant/app_prefs.dart';
 import 'admin_home_page.dart';
 import 'user_list_page.dart';
 import '../constant/app_constants.dart';
+import '../service/firebase_service.dart';
 
 /// Riverpod 상태관리: 현재 로그인 상태(없음/관리자/사용자)
 final loginStateProvider = StateProvider<LoginState>((ref) => LoginState.none);
@@ -24,6 +25,7 @@ class LoginPage extends ConsumerStatefulWidget {
 
 class _LoginPageState extends ConsumerState<LoginPage> {
   final TextEditingController _codeController = TextEditingController();
+  final FirebaseService _firebaseService = FirebaseService();
 
   @override
   void initState() {
@@ -49,17 +51,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         context,
         MaterialPageRoute(builder: (context) => const AdminHomePage()),
       );
-    } else if (code == AppConstants.userCode ||
-        code == AppConstants.testUserCode) {
-      notifier.state = LoginState.user;
-      errorNotifier.state = null;
-      await AppPrefs.setLoginRole('user');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const UserListPage()),
-      );
     } else {
-      errorNotifier.state = AppConstants.loginErrorMsg;
+      // Firestore에서 문서 id(=사용자 코드) 존재 여부 확인
+      final userKeys = await _firebaseService.getAllDocumentKeys('customers');
+      if (userKeys.contains(code)) {
+        notifier.state = LoginState.user;
+        errorNotifier.state = null;
+        await AppPrefs.setLoginRole('user');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const UserListPage()),
+        );
+      } else {
+        errorNotifier.state = AppConstants.loginErrorMsg;
+      }
     }
   }
 

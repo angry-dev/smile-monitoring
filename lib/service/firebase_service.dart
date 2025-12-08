@@ -56,4 +56,10 @@ class FirebaseService {
         .get();
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
+
+  // 컬렉션 하위 모든 문서의 key(문서 id) 가져오기
+  Future<List<String>> getAllDocumentKeys(String collection) async {
+    final snapshot = await _firestore.collection(collection).get();
+    return snapshot.docs.map((doc) => doc.id).toList();
+  }
 }
