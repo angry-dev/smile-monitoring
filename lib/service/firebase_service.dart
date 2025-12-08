@@ -62,4 +62,27 @@ class FirebaseService {
     final snapshot = await _firestore.collection(collection).get();
     return snapshot.docs.map((doc) => doc.id).toList();
   }
+
+  /// code가 문서 id인 문서의 cust_list 필드만 가져오는 Future 메서드
+  Future<List<Map<String, dynamic>>> getCustListByUserCode(String code) async {
+    final doc = await _firestore.collection('customers').doc(code).get();
+    if (doc.exists) {
+      final data = doc.data();
+      if (data != null && data['cust_list'] is List) {
+        return List<Map<String, dynamic>>.from(data['cust_list']);
+      }
+    }
+    return [];
+  }
+
+  /// code가 문서 id인 문서의 cust_list 필드를 실시간 스트림으로 반환
+  Stream<List<Map<String, dynamic>>> getCustListStreamByUserCode(String code) {
+    return _firestore.collection('customers').doc(code).snapshots().map((doc) {
+      final data = doc.data();
+      if (data != null && data['cust_list'] is List) {
+        return List<Map<String, dynamic>>.from(data['cust_list']);
+      }
+      return [];
+    });
+  }
 }
