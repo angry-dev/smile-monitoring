@@ -24,7 +24,8 @@ final customersProvider =
       .toList();
 });
 
-final searchTextProvider = StateProvider<String>((ref) => '');
+final searchBrokerTextProvider = StateProvider<String>((ref) => '');
+final searchCustomerTextProvider = StateProvider<String>((ref) => '');
 
 final editModeProvider = StateProvider<bool>((ref) => false);
 final deleteModeProvider = StateProvider<bool>((ref) => false);

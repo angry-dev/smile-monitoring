@@ -42,7 +42,7 @@ class AdminListPage extends ConsumerWidget {
                     ),
                     style: const TextStyle(fontSize: 14),
                     onChanged: (value) {
-                      ref.read(searchTextProvider.notifier).state =
+                      ref.read(searchCustomerTextProvider.notifier).state =
                           value.trim();
                     },
                   ),
@@ -124,7 +124,7 @@ class AdminListPage extends ConsumerWidget {
               child: Consumer(
                 builder: (context, ref, _) {
                   final customersAsync = ref.watch(customersProvider(code));
-                  final searchText = ref.watch(searchTextProvider);
+                  final searchText = ref.watch(searchCustomerTextProvider);
                   return customersAsync.when(
                     loading: () =>
                         const Center(child: CircularProgressIndicator()),

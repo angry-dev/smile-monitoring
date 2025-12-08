@@ -9,12 +9,12 @@ import '../provider/customers_provider.dart';
 
 import '../model/broker.dart';
 
-class CustDataTable extends StatelessWidget {
+class BrokerDataTable extends StatelessWidget {
   final List<Broker> brokers;
   final bool editMode;
   final bool deleteMode;
   final void Function(String code, int index)? onRowTap;
-  const CustDataTable({
+  const BrokerDataTable({
     super.key,
     required this.brokers,
     required this.editMode,

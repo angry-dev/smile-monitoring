@@ -13,7 +13,7 @@ class AdminHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchText = ref.watch(searchTextProvider);
+    final searchText = ref.watch(searchBrokerTextProvider);
     final customersAsync = ref.watch(brokersProvider);
     final editMode = ref.watch(editModeProvider);
     final deleteMode = ref.watch(deleteModeProvider);
@@ -50,7 +50,7 @@ class AdminHomePage extends ConsumerWidget {
                           ),
                           style: const TextStyle(fontSize: 14),
                           onChanged: (value) {
-                            ref.read(searchTextProvider.notifier).state =
+                            ref.read(searchBrokerTextProvider.notifier).state =
                                 value.trim();
                           },
                         ),
@@ -136,7 +136,7 @@ class AdminHomePage extends ConsumerWidget {
                   if (filtered.isEmpty) {
                     return const Center(child: Text('고객 데이터가 없습니다'));
                   }
-                  return CustDataTable(
+                  return BrokerDataTable(
                     brokers: filtered,
                     editMode: editMode,
                     deleteMode: deleteMode,
