@@ -7,6 +7,7 @@ import 'user_list_page.dart';
 import '../constant/app_constants.dart';
 import '../service/firebase_service.dart';
 import '../provider/broker_code_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Riverpod 상태관리: 현재 로그인 상태(없음/관리자/사용자)
 final loginStateProvider = StateProvider<LoginState>((ref) => LoginState.none);
@@ -49,7 +50,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       notifier.state = LoginState.admin;
       errorNotifier.state = null;
       await AppPrefs.setLoginRole('admin');
-      brokerCodeNotifier.state = null;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('broker_code');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const AdminHomePage()),
@@ -61,7 +63,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         notifier.state = LoginState.user;
         errorNotifier.state = null;
         await AppPrefs.setLoginRole('user');
-        brokerCodeNotifier.state = code;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('broker_code', code);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const UserListPage()),

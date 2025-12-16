@@ -39,11 +39,11 @@ class _CommonDataTableState extends State<CommonDataTable> {
       children: [
         Table(
           columnWidths: {
-            0: FixedColumnWidth(48.w),
+            0: FixedColumnWidth(40.w),
             1: const FlexColumnWidth(2),
             2: const FlexColumnWidth(2),
-            3: const FlexColumnWidth(2),
-            4: const FlexColumnWidth(3),
+            3: const FlexColumnWidth(3),
+            4: const FlexColumnWidth(2),
           },
           border: TableBorder.all(color: Colors.grey.shade300),
           children: [
@@ -156,11 +156,11 @@ class _CommonDataTableState extends State<CommonDataTable> {
                       color: isSelected ? Colors.blue.withOpacity(0.2) : null,
                       child: Table(
                         columnWidths: {
-                          0: FixedColumnWidth(48.w),
+                          0: FixedColumnWidth(40.w),
                           1: const FlexColumnWidth(2),
                           2: const FlexColumnWidth(2),
-                          3: const FlexColumnWidth(2),
-                          4: const FlexColumnWidth(3),
+                          3: const FlexColumnWidth(3),
+                          4: const FlexColumnWidth(2),
                         },
                         border: TableBorder.symmetric(
                             inside: BorderSide(color: Colors.grey.shade300)),
@@ -218,8 +218,7 @@ class _CommonDataTableState extends State<CommonDataTable> {
                                     style: TextStyle(
                                         fontSize: TableFontConstants.cell),
                                     textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 3,
                                   ),
                                 ),
                               ),

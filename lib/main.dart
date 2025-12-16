@@ -40,7 +40,6 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
           theme: AppTheme.light,
           home: home,
         );

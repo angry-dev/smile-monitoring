@@ -66,7 +66,7 @@ class AppTheme {
     ),
     appBarTheme: const AppBarTheme(
       elevation: 0,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Color(0xFFF6F7FB),
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
       titleTextStyle: AppTextStyles.title,
@@ -158,4 +158,3 @@ class AppTheme {
     ),
   );
 }
-

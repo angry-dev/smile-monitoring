@@ -17,10 +17,8 @@ class _BalloonIconState extends State<BalloonIcon> {
     final renderBox = context.findRenderObject() as RenderBox?;
     final offset = renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
     final size = renderBox?.size ?? Size.zero;
-
-    // 말풍선의 실제 너비를 Balloon에서 maxWidth로 지정하므로, 중앙 정렬을 위해 해당 값 사용
     final balloonWidth = 160.w;
-    final balloonHeight = 48.h; // 대략적인 말풍선+화살표 높이
+    final balloonHeight = 48.h;
 
     _overlayEntry = OverlayEntry(
       builder: (context) => GestureDetector(
@@ -29,8 +27,8 @@ class _BalloonIconState extends State<BalloonIcon> {
         child: Stack(
           children: [
             Positioned(
-              left: offset.dx + size.width / 8 - balloonWidth / 8,
-              top: offset.dy - balloonHeight,
+              left: offset.dx - (balloonWidth - size.width) / 4.w,
+              top: offset.dy - balloonHeight - 8.h,
               child: Material(
                 color: Colors.transparent,
                 child: _Balloon(message: widget.message),
