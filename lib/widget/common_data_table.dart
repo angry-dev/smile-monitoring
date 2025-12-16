@@ -234,8 +234,6 @@ class _CommonDataTableState extends State<CommonDataTable> {
                                                   fontSize:
                                                       TableFontConstants.cell),
                                               textAlign: TextAlign.center,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
                                             )
                                           : Center(
                                               child: BalloonIcon(

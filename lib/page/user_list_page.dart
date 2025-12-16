@@ -17,7 +17,7 @@ class UserListPage extends StatelessWidget {
         final code = snapshot.data;
         return Scaffold(
           appBar: AppBar(
-            title: const Text('고객 목록'),
+            title: const Text('진행상황 목록'),
             actions: const [LogoutButton()],
           ),
           body: Padding(
