@@ -30,14 +30,20 @@ class FirebaseService {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // 고객 등록
-  Future<void> addCustomer({required String code, required String name}) async {
+  /// 고객 등록 (코드 중복 검사 포함)
+  /// true: 등록 성공, false: 중복 코드
+  Future<bool> addCustomer({required String code, required String name}) async {
+    final doc = await _firestore.collection('customers').doc(code).get();
+    if (doc.exists) {
+      return false;
+    }
     await _firestore.collection('customers').doc(code).set({
       'code': code,
       'name': name,
       'cust_list': [],
       'createdAt': FieldValue.serverTimestamp(),
     });
+    return true;
   }
 
   // 고객 목록 조회 (Stream)
