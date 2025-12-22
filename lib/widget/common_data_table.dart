@@ -135,121 +135,126 @@ class _CommonDataTableState extends State<CommonDataTable> {
             itemBuilder: (context, index) {
               final customer = widget.customers[index];
               final isSelected = selectedRow == index;
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    if (isSelected) {
-                      selectedRow = null;
-                    } else {
-                      selectedRow = index;
-                    }
-                  });
-                  if (widget.onSelectedRowsChanged != null) {
-                    widget.onSelectedRowsChanged!(
-                      selectedRow != null ? {selectedRow!} : <int>{},
-                    );
-                  }
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      color: isSelected ? Colors.blue.withOpacity(0.2) : null,
-                      child: Table(
-                        columnWidths: {
-                          0: FixedColumnWidth(40.w),
-                          1: const FlexColumnWidth(2),
-                          2: const FlexColumnWidth(2),
-                          3: const FlexColumnWidth(3),
-                          4: const FlexColumnWidth(2),
-                        },
-                        border: TableBorder.symmetric(
-                            inside: BorderSide(color: Colors.grey.shade300)),
-                        children: [
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(8.w),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    (index + 1).toString(),
-                                    style: TextStyle(
-                                        fontSize: TableFontConstants.cell),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+              Widget rowContent = Column(
+                children: [
+                  Container(
+                    color: isSelected ? Colors.blue.withOpacity(0.2) : null,
+                    child: Table(
+                      columnWidths: {
+                        0: FixedColumnWidth(40.w),
+                        1: const FlexColumnWidth(2),
+                        2: const FlexColumnWidth(2),
+                        3: const FlexColumnWidth(3),
+                        4: const FlexColumnWidth(2),
+                      },
+                      border: TableBorder.symmetric(
+                          inside: BorderSide(color: Colors.grey.shade300)),
+                      children: [
+                        TableRow(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(8.w),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  (index + 1).toString(),
+                                  style: TextStyle(
+                                      fontSize: TableFontConstants.cell),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(8.w),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    customer.name,
-                                    style: TextStyle(
-                                        fontSize: TableFontConstants.cell),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.w),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  customer.name,
+                                  style: TextStyle(
+                                      fontSize: TableFontConstants.cell),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(8.w),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    customer.disease,
-                                    style: TextStyle(
-                                        fontSize: TableFontConstants.cell),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.w),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  customer.disease,
+                                  style: TextStyle(
+                                      fontSize: TableFontConstants.cell),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(8.w),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    customer.status,
-                                    style: TextStyle(
-                                        fontSize: TableFontConstants.cell),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 3,
-                                  ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.w),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  customer.status,
+                                  style: TextStyle(
+                                      fontSize: TableFontConstants.cell),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 3,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(8.w),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: customer.note.isNotEmpty
-                                      ? (widget.userRole == UserRole.admin
-                                          ? Text(
-                                              customer.note,
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      TableFontConstants.cell),
-                                              textAlign: TextAlign.center,
-                                            )
-                                          : Center(
-                                              child: BalloonIcon(
-                                                  message: customer.note)))
-                                      : const SizedBox.shrink(),
-                                ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.w),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: customer.note.isNotEmpty
+                                    ? (widget.userRole == UserRole.admin
+                                        ? Text(
+                                            customer.note,
+                                            style: TextStyle(
+                                                fontSize:
+                                                    TableFontConstants.cell),
+                                            textAlign: TextAlign.center,
+                                          )
+                                        : Center(
+                                            child: BalloonIcon(
+                                                message: customer.note)))
+                                    : const SizedBox.shrink(),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    Divider(height: 1, color: Colors.grey.shade300),
-                  ],
-                ),
+                  ),
+                  Divider(height: 1, color: Colors.grey.shade300),
+                ],
               );
+              if (widget.userRole == UserRole.admin) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (isSelected) {
+                        selectedRow = null;
+                      } else {
+                        selectedRow = index;
+                      }
+                    });
+                    if (widget.onSelectedRowsChanged != null) {
+                      widget.onSelectedRowsChanged!(
+                        selectedRow != null ? {selectedRow!} : <int>{},
+                      );
+                    }
+                  },
+                  child: rowContent,
+                );
+              } else {
+                return rowContent;
+              }
             },
           ),
         ),
