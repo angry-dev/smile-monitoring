@@ -25,4 +25,14 @@ class AppPrefs {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(loginRoleKey);
   }
+
+  static Future<void> setAdminCode(String adminCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('admin_code', adminCode);
+  }
+
+  static Future<String?> getAdminCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('admin_code');
+  }
 }

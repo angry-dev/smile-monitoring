@@ -91,6 +91,8 @@ class BrokerDataTable extends StatelessWidget {
                           );
                           if (result == true) {
                             await FirebaseFirestore.instance
+                                .collection('admins')
+                                .doc(broker.adminCode)
                                 .collection('customers')
                                 .doc(broker.code)
                                 .update({
@@ -110,6 +112,8 @@ class BrokerDataTable extends StatelessWidget {
                         tooltip: '삭제',
                         onPressed: () async {
                           await FirebaseFirestore.instance
+                              .collection('admins')
+                              .doc(broker.adminCode)
                               .collection('customers')
                               .doc(broker.code)
                               .delete();

@@ -8,7 +8,9 @@ class FirebaseService {
         .doc(adminCode)
         .collection('customers')
         .get();
-    return snapshot.docs.map((doc) => doc.id).toList();
+
+    List<String> result = snapshot.docs.map((doc) => doc.id).toList();
+    return result;
   }
 
   Future<List<String>> getAllCustomerDocumentIdsForAdmins(
@@ -40,8 +42,14 @@ class FirebaseService {
 
   // 특정 code 문서의 cust_list 필드에 데이터 추가
   Future<void> addCustToList(
-      {required String code, required Map<String, dynamic> custData}) async {
-    final docRef = _firestore.collection('customers').doc(code);
+      {required String adminCode,
+      required String code,
+      required Map<String, dynamic> custData}) async {
+    final docRef = _firestore
+        .collection('admins')
+        .doc(adminCode)
+        .collection('customers')
+        .doc(code);
     await docRef.update({
       'cust_list': FieldValue.arrayUnion([custData])
     });
@@ -49,8 +57,15 @@ class FirebaseService {
 
   // 특정 code 문서의 필드 값 가져오기
   Future<dynamic> getCustomerField(
-      {required String code, required String field}) async {
-    final doc = await _firestore.collection('customers').doc(code).get();
+      {required String adminCode,
+      required String code,
+      required String field}) async {
+    final doc = await _firestore
+        .collection('admins')
+        .doc(adminCode)
+        .collection('customers')
+        .doc(code)
+        .get();
     if (doc.exists) {
       final data = doc.data();
       return data != null ? data[field] : null;
@@ -62,12 +77,27 @@ class FirebaseService {
 
   /// 고객 등록 (코드 중복 검사 포함)
   /// true: 등록 성공, false: 중복 코드
-  Future<bool> addCustomer({required String code, required String name}) async {
-    final doc = await _firestore.collection('customers').doc(code).get();
+  Future<bool> addCustomer({
+    required String adminCode,
+    required String code,
+    required String name,
+  }) async {
+    final doc = await _firestore
+        .collection('admins')
+        .doc(adminCode)
+        .collection('customers')
+        .doc(code)
+        .get();
     if (doc.exists) {
       return false;
     }
-    await _firestore.collection('customers').doc(code).set({
+    await _firestore
+        .collection('admins')
+        .doc(adminCode)
+        .collection('customers')
+        .doc(code)
+        .set({
+      'adminCode': adminCode,
       'code': code,
       'name': name,
       'cust_list': [],

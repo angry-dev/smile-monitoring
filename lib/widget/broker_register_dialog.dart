@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/provider/customers_provider.dart';
 import 'package:flutter_app/service/firebase_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class BrokerRegisterDialog extends StatelessWidget {
+class BrokerRegisterDialog extends ConsumerWidget {
   final TextEditingController codeController;
   final TextEditingController nameController;
   final VoidCallback onRegister;
@@ -17,9 +19,11 @@ class BrokerRegisterDialog extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final adminCode = ref.watch(adminCodeProvider);
+
     return AlertDialog(
-      title: const Text('고객 등록'),
+      title: const Text('고객 등록12'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -50,13 +54,15 @@ class BrokerRegisterDialog extends StatelessWidget {
             final code = codeController.text.trim();
             final name = nameController.text.trim();
             if (code.isEmpty || name.isEmpty) return;
-            final result =
-                await FirebaseService().addCustomer(code: code, name: name);
+            final result = await FirebaseService()
+                .addCustomer(adminCode: adminCode!, code: code, name: name);
             if (result) {
               onRegister();
+              // ignore: use_build_context_synchronously
               Navigator.of(context).pop();
             } else {
               showDialog(
+                // ignore: use_build_context_synchronously
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: const Text('등록 실패'),

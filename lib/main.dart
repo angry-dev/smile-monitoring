@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/firebase_options.dart';
+import 'package:flutter_app/provider/customers_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,14 +20,20 @@ void main() async {
   runApp(ProviderScope(child: MyApp(loginRole: loginRole)));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   final String? loginRole;
   const MyApp({super.key, this.loginRole});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     Widget home;
     if (loginRole == 'admin') {
+      // 자동로그인 시 adminCodeProvider 세팅
+      AppPrefs.getAdminCode().then((code) {
+        if (code != null) {
+          ref.read(adminCodeProvider.notifier).state = code;
+        }
+      });
       home = const AdminHomePage();
     } else if (loginRole == 'user') {
       home = const UserListPage();

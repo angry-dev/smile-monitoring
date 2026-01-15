@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/provider/customers_provider.dart';
 import 'package:flutter_app/service/firebase_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustRegPage extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class CustRegPage extends ConsumerWidget {
   final String code;
   const CustRegPage({super.key, required this.code});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final nameController = TextEditingController();
     final diseaseController = TextEditingController();
     final noteController = TextEditingController();
+    final adminCode = ref.read(adminCodeProvider);
     String selectedStatus = '서류준비중';
 
     return Scaffold(
@@ -85,8 +89,10 @@ class CustRegPage extends StatelessWidget {
                         'createdAt': DateTime.now().toIso8601String(),
                       };
                       // Firestore에 추가
-                      await FirebaseService()
-                          .addCustToList(code: code, custData: custData);
+                      await FirebaseService().addCustToList(
+                          adminCode: adminCode!,
+                          code: code,
+                          custData: custData);
                       Navigator.of(context).pop(true);
                     },
                     child: const Text('등록'),

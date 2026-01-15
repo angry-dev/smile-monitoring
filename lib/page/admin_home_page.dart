@@ -17,10 +17,11 @@ class AdminHomePage extends ConsumerWidget {
     final customersAsync = ref.watch(brokersProvider);
     final editMode = ref.watch(editModeProvider);
     final deleteMode = ref.watch(deleteModeProvider);
+    final adminCode = ref.watch(adminCodeProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('고객 목록'),
+        title: Text('고객 목록 ${adminCode != null ? '($adminCode)' : 'nil'}'),
         actions: const [LogoutButton()],
       ),
       body: Padding(
@@ -72,11 +73,14 @@ class AdminHomePage extends ConsumerWidget {
                                   await FirebaseService()
                                       .deleteCustomerDoc(code: code);
 
-                                  await FirebaseService()
-                                      .addCustomer(code: code, name: name);
+                                  await FirebaseService().addCustomer(
+                                      adminCode: adminCode!,
+                                      code: code,
+                                      name: name);
                                   ref.invalidate(brokersProvider);
 
-                                  Navigator.of(context).pop();
+                                  // ignore: use_build_context_synchronously
+                                  // Navigator.of(context).pop();
                                 } else {
                                   // Handle empty fields if necessary
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -142,7 +146,10 @@ class AdminHomePage extends ConsumerWidget {
                     deleteMode: deleteMode,
                     onRowTap: (code, index) {
                       FirebaseService()
-                          .getCustomerField(code: code, field: 'cust_list')
+                          .getCustomerField(
+                              adminCode: adminCode!,
+                              code: code,
+                              field: 'cust_list')
                           .then((custList) {
                         if (custList != null) {
                           final code = filtered[index].code;

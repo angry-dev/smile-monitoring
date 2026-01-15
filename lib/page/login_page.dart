@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/provider/customers_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constant/app_prefs.dart';
@@ -32,7 +33,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   void initState() {
     super.initState();
-    // 자동 로그인 로직 제거
+    _restoreAdminCode();
+  }
+
+  Future<void> _restoreAdminCode() async {
+    final code = await AppPrefs.getAdminCode();
+    if (code != null) {
+      ref.read(adminCodeProvider.notifier).state = code;
+    }
   }
 
   /// SharedPreferences에 저장된 역할이 있으면 자동로그인 처리
@@ -42,18 +50,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   /// - 코드가 맞으면 상태/SharedPreferences에 역할 저장
   /// - 틀리면 에러 메시지 표시
   Future<void> _login() async {
+    debugPrint('[login] _login() called');
     final code = _codeController.text.trim();
+    debugPrint('[login] 입력 코드: $code');
     final notifier = ref.read(loginStateProvider.notifier);
     final errorNotifier = ref.read(_errorTextProvider.notifier);
-    final brokerCodeNotifier = ref.read(brokerCodeProvider.notifier);
-
     final adminCodes = await _firebaseService.getAllAdminDocumentKeys();
+    debugPrint('[login] adminCodes: $adminCodes');
     if (adminCodes.contains(code)) {
+      debugPrint('[login] 관리자 로그인 성공, adminCode: $code');
       notifier.state = LoginState.admin;
       errorNotifier.state = null;
+      ref.read(adminCodeProvider.notifier).state =
+          code; // Provider에 adminCode 세팅
       await AppPrefs.setLoginRole('admin');
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('broker_code');
+      await AppPrefs.setAdminCode(code);
+      // final prefs = await SharedPreferences.getInstance();
+      // await prefs.remove('broker_code');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const AdminHomePage()),
@@ -61,7 +74,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     } else {
       final userCodes =
           await _firebaseService.getAllCustomerDocumentIdsForAdmins(adminCodes);
+      debugPrint('[login] userCodes: $userCodes');
       if (userCodes.contains(code)) {
+        debugPrint('[login] 사용자 로그인 성공, userCode: $code');
         notifier.state = LoginState.user;
         errorNotifier.state = null;
         await AppPrefs.setLoginRole('user');
@@ -72,6 +87,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           MaterialPageRoute(builder: (context) => const UserListPage()),
         );
       } else {
+        debugPrint('[login] 존재하지 않는 코드');
         errorNotifier.state = '존재하지 않는 코드입니다.';
       }
     }

@@ -16,6 +16,7 @@ class AdminListPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCustomer = ref.watch(selectedCustomerProvider);
+    final adminCode = ref.watch(adminCodeProvider);
     final editMode = ref.watch(editModeProvider);
     return Scaffold(
       appBar: AppBar(
@@ -76,6 +77,8 @@ class AdminListPage extends ConsumerWidget {
                                 customer: selectedCustomer,
                                 onSave: (updatedCustomer) async {
                                   final doc = await FirebaseFirestore.instance
+                                      .collection('admins')
+                                      .doc(adminCode)
                                       .collection('customers')
                                       .doc(code)
                                       .get();
@@ -97,6 +100,8 @@ class AdminListPage extends ConsumerWidget {
                                     final updatedCustListRaw =
                                         custList.map((c) => c.toMap()).toList();
                                     await FirebaseFirestore.instance
+                                        .collection('admins')
+                                        .doc(adminCode)
                                         .collection('customers')
                                         .doc(code)
                                         .update(

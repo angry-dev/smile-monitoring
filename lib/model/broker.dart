@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Broker {
+  final String adminCode;
   final String code;
   final String name;
   final List<dynamic> custList;
   final DateTime createdAt;
 
   Broker({
+    this.adminCode = '',
     required this.code,
     required this.name,
     required this.custList,
@@ -16,6 +18,7 @@ class Broker {
   // Firestore 데이터 변환용
   factory Broker.fromMap(Map<String, dynamic> map) {
     return Broker(
+      adminCode: map['adminCode'] ?? '',
       code: map['code'] ?? '',
       name: map['name'] ?? '',
       custList: map['cust_list'] != null ? map['cust_list'] as List : [],
@@ -29,6 +32,7 @@ class Broker {
 
   Map<String, dynamic> toMap() {
     return {
+      'adminCode': adminCode,
       'code': code,
       'name': name,
       'cust_list': custList,
