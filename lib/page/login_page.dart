@@ -46,7 +46,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final notifier = ref.read(loginStateProvider.notifier);
     final errorNotifier = ref.read(_errorTextProvider.notifier);
     final brokerCodeNotifier = ref.read(brokerCodeProvider.notifier);
-    if (code == AppConstants.adminCode || code == AppConstants.testAdminCode) {
+
+    final adminCodes = await _firebaseService.getAllAdminDocumentKeys();
+    if (adminCodes.contains(code)) {
       notifier.state = LoginState.admin;
       errorNotifier.state = null;
       await AppPrefs.setLoginRole('admin');
@@ -57,9 +59,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         MaterialPageRoute(builder: (context) => const AdminHomePage()),
       );
     } else {
-      // Firestore에서 문서 id(=사용자 코드) 존재 여부 확인
-      final userKeys = await _firebaseService.getAllDocumentKeys('customers');
-      if (userKeys.contains(code)) {
+      final userCodes =
+          await _firebaseService.getAllCustomerDocumentIdsForAdmins(adminCodes);
+      if (userCodes.contains(code)) {
         notifier.state = LoginState.user;
         errorNotifier.state = null;
         await AppPrefs.setLoginRole('user');
@@ -70,7 +72,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           MaterialPageRoute(builder: (context) => const UserListPage()),
         );
       } else {
-        errorNotifier.state = AppConstants.loginErrorMsg;
+        errorNotifier.state = '존재하지 않는 코드입니다.';
       }
     }
   }

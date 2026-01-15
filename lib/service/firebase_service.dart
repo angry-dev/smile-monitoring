@@ -1,6 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseService {
+  /// 특정 adminCode 하위 customers 서브컬렉션의 모든 customerId 반환
+  Future<List<String>> getAllDocumentKeysForAdmin(String adminCode) async {
+    final snapshot = await _firestore
+        .collection('admins')
+        .doc(adminCode)
+        .collection('customers')
+        .get();
+    return snapshot.docs.map((doc) => doc.id).toList();
+  }
+
+  Future<List<String>> getAllCustomerDocumentIdsForAdmins(
+      List<String> adminCodes) async {
+    List<String> allCustomerIds = [];
+    for (final adminCode in adminCodes) {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('admins')
+          .doc(adminCode)
+          .collection('customers')
+          .get();
+      allCustomerIds.addAll(snapshot.docs.map((doc) => doc.id));
+    }
+    return allCustomerIds;
+  }
+
+  // admins 하위 모든 문서 id 가져오기
+  Future<List<String>> getAllAdminDocumentKeys() async {
+    final snapshot = await _firestore.collection('admins').get();
+    return snapshot.docs.map((doc) => doc.id).toList();
+  }
+
   // 특정 문서 삭제
   Future<void> deleteCustomerDoc({
     required String code,
