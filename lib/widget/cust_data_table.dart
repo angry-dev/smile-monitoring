@@ -14,13 +14,14 @@ class BrokerDataTable extends StatelessWidget {
   final bool editMode;
   final bool deleteMode;
   final void Function(String code, int index)? onRowTap;
-  const BrokerDataTable({
-    super.key,
-    required this.brokers,
-    required this.editMode,
-    required this.deleteMode,
-    this.onRowTap,
-  });
+  final void Function(String code, int index)? onLongPress;
+  const BrokerDataTable(
+      {super.key,
+      required this.brokers,
+      required this.editMode,
+      required this.deleteMode,
+      this.onRowTap,
+      this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +39,11 @@ class BrokerDataTable extends StatelessWidget {
                   style:
                       TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
               subtitle: Text(broker.code, style: TextStyle(fontSize: 11.sp)),
+              onLongPress: () {
+                if (onLongPress != null) {
+                  onLongPress!(broker.code, index);
+                }
+              },
               onTap: () {
                 if (onRowTap != null) {
                   onRowTap!(broker.code, index);

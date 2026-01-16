@@ -162,6 +162,55 @@ class AdminHomePage extends ConsumerWidget {
                         }
                       });
                     },
+                    onLongPress: (userCode, index) {
+                      // userCode, userName 수정 다이얼로그
+                      final nameController = TextEditingController();
+                      final codeController = TextEditingController();
+                      nameController.text = filtered[index].name;
+                      codeController.text = filtered[index].code;
+                      showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('고객 정보 편집'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextField(
+                                controller: nameController,
+                                decoration:
+                                    const InputDecoration(labelText: '이름'),
+                              ),
+                              SizedBox(height: 12.h),
+                              TextField(
+                                controller: codeController,
+                                decoration:
+                                    const InputDecoration(labelText: '코드'),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text('취소'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: const Text('저장'),
+                            ),
+                          ],
+                        ),
+                      ).then((result) async {
+                        if (result == true) {
+                          await FirebaseService().updateCustomerField(
+                            adminCode: adminCode!,
+                            userCode: userCode,
+                            newCode: codeController.text.trim(),
+                            newName: nameController.text.trim(),
+                          );
+                          ref.invalidate(brokersProvider);
+                        }
+                      });
+                    },
                   );
                 },
               ),

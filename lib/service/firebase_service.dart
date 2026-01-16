@@ -151,4 +151,38 @@ class FirebaseService {
       return [];
     });
   }
+
+  /// 고객 문서의 특정 필드 업데이트
+  Future<void> updateCustomerField({
+    required String adminCode,
+    required String userCode,
+    String? newCode,
+    String? newName,
+  }) async {
+    final collection = FirebaseFirestore.instance
+        .collection('admins')
+        .doc(adminCode)
+        .collection('customers');
+    final docRef = collection.doc(userCode);
+    final doc = await docRef.get();
+    if (!doc.exists) return;
+    final data = doc.data();
+    if (data == null) return;
+
+    // 데이터 갱신
+    final updatedData = Map<String, dynamic>.from(data);
+    if (newName != null) {
+      updatedData['name'] = newName;
+    }
+    updatedData['updatedAt'] = FieldValue.serverTimestamp();
+
+    if (newCode != null && newCode != userCode) {
+      updatedData['code'] = newCode;
+      // 새 문서 생성 후 기존 문서 삭제
+      await collection.doc(newCode).set(updatedData);
+      await docRef.delete();
+    } else {
+      await docRef.update(updatedData);
+    }
+  }
 }
