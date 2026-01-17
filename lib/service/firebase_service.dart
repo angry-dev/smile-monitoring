@@ -82,13 +82,11 @@ class FirebaseService {
     required String code,
     required String name,
   }) async {
-    final doc = await _firestore
-        .collection('admins')
-        .doc(adminCode)
-        .collection('customers')
-        .doc(code)
-        .get();
-    if (doc.exists) {
+    // 모든 adminCode의 고객 코드 중복 검사
+    final allAdminCodes = await getAllAdminDocumentKeys();
+    final allCustomerIds =
+        await getAllCustomerDocumentIdsForAdmins(allAdminCodes);
+    if (allCustomerIds.contains(code)) {
       return false;
     }
     await _firestore

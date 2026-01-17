@@ -66,7 +66,8 @@ class BrokerRegisterDialog extends ConsumerWidget {
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: const Text('등록 실패'),
-                  content: const Text('이미 존재하는 코드입니다. 다른 코드를 입력해 주세요.'),
+                  content: const Text(
+                      '이미 다른 직원의 고객 코드로 사용 중입니다. 다른 고유한 코드를 입력해 주세요.'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(ctx).pop(),
