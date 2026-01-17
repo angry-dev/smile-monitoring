@@ -65,11 +65,13 @@ class _AdminCustomersPageState extends State<AdminCustomersPage> {
                     return Center(child: Text('에러: ${snapshot.error}'));
                   }
                   final customerIds = snapshot.data ?? [];
-                  final filtered = searchText.isEmpty
-                      ? customerIds
-                      : customerIds
-                          .where((id) => id.contains(searchText))
-                          .toList();
+                  final filtered = (searchText.isEmpty
+                          ? customerIds
+                          : customerIds
+                              .where((id) => id.contains(searchText))
+                              .toList())
+                      .where((id) => id != '_init')
+                      .toList();
                   if (filtered.isEmpty) {
                     return const Center(child: Text('고객 없음'));
                   }

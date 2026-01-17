@@ -133,6 +133,120 @@ class WorkerRegPage extends ConsumerWidget {
                       ),
                     );
                   },
+                  onLongPress: () async {
+                    final codeController =
+                        TextEditingController(text: admin['code'] ?? '');
+                    final nameController =
+                        TextEditingController(text: admin['name'] ?? '');
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('직원 정보 수정'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              controller: nameController,
+                              decoration:
+                                  const InputDecoration(labelText: '이름'),
+                            ),
+                            SizedBox(height: 12.h),
+                            TextField(
+                              controller: codeController,
+                              decoration:
+                                  const InputDecoration(labelText: '코드'),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          //직원 삭제 버튼
+                          TextButton(
+                            onPressed: () async {
+                              final code = admin['code'] ?? '';
+                              if (code.isEmpty) return;
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('직원 삭제 확인',
+                                      style: TextStyle(color: Colors.black)),
+                                  content: const Text(
+                                    '정말로 이 직원을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다. \n\n 이 직원의 모든 고객 데이터도 함께 삭제됩니다.',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text('취소'),
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: const Text('직원삭제',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirm == true) {
+                                await FirebaseService()
+                                    .deleteAdminAndCustomers(code);
+                                if (context.mounted) {
+                                  Navigator.of(context).pop();
+                                  ref.refresh(adminsProvider);
+                                }
+                              }
+                            },
+                            child: const Text('삭제',
+                                style: TextStyle(color: Colors.red)),
+                          ),
+
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('취소'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              final newName = nameController.text.trim();
+                              final newCode = codeController.text.trim();
+                              if (newName.isEmpty || newCode.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('이름과 코드를 모두 입력해주세요.')),
+                                );
+                                return;
+                              }
+
+                              final oldCode = admin['code'] ?? '';
+                              // 1. 하위 customers 데이터 복사
+                              await FirebaseService()
+                                  .moveAllCustomersToNewAdminCode(
+                                oldAdminCode: oldCode,
+                                newAdminCode: newCode,
+                                newName: newName,
+                              );
+                              // 2. 새 직원 문서 생성 (name, code 필드)
+                              await FirebaseService()
+                                  .createAdminWithCustomersCollection(
+                                code: newCode,
+                                name: newName,
+                              );
+                              // 4. 갱신
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
+                                ref.refresh(adminsProvider);
+                              }
+                            },
+                            child: const Text('저장'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               );
             },

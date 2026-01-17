@@ -224,4 +224,61 @@ class FirebaseService {
     await customersColRef.doc('_init').set({'init': true});
     // 필요시 _init 문서는 나중에 삭제 가능
   }
+
+  /// 직원 코드 변경 시 기존 직원 하위 customers 데이터를 새로운 직원 코드 하위로 복사
+  Future<void> moveAllCustomersToNewAdminCode({
+    required String oldAdminCode,
+    required String newAdminCode,
+    String? newName,
+  }) async {
+    final oldCustomers = await _firestore
+        .collection('admins')
+        .doc(oldAdminCode)
+        .collection('customers')
+        .get();
+
+    final newCustomersCol = _firestore
+        .collection('admins')
+        .doc(newAdminCode)
+        .collection('customers');
+
+    // newCustomersCol.doc(newAdminCode).set({
+    //   'name': newName ?? '',
+    //   'code': newAdminCode,
+    //   'createdAt': FieldValue.serverTimestamp(),
+    // });
+
+    for (final doc in oldCustomers.docs) {
+      final data = doc.data();
+      await newCustomersCol.doc(doc.id).set(data);
+    }
+
+    // 기존 직원의 customers 서브컬렉션 삭제
+    final oldCustomersCol = _firestore
+        .collection('admins')
+        .doc(oldAdminCode)
+        .collection('customers');
+    final oldCustomersSnapshot = await oldCustomersCol.get();
+    for (final doc in oldCustomersSnapshot.docs) {
+      await doc.reference.delete();
+    }
+
+    // 기존 직원 문서 삭제
+    await _firestore.collection('admins').doc(oldAdminCode).delete();
+  }
+
+  /// 직원 삭제
+  /// 해당 직원의 customers 서브컬렉션도 모두 삭제
+  /// 주의: 이 작업은 되돌릴 수 없습니다.
+  /// 직원과 관련된 모든 데이터를 완전히 삭제합니다.
+  /// 신중히 사용하세요.
+  Future<void> deleteAdminAndCustomers(String adminCode) async {
+    final adminDocRef = _firestore.collection('admins').doc(adminCode);
+    final customersColRef = adminDocRef.collection('customers');
+    final customersSnapshot = await customersColRef.get();
+    for (final doc in customersSnapshot.docs) {
+      await doc.reference.delete();
+    }
+    await adminDocRef.delete();
+  }
 }
