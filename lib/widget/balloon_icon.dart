@@ -17,7 +17,6 @@ class _BalloonIconState extends State<BalloonIcon> {
   void _showBalloon(BuildContext context) {
     final renderBox = context.findRenderObject() as RenderBox?;
     final offset = renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
-    final size = renderBox?.size ?? Size.zero;
 
     OverlayEntry? entry;
     entry = OverlayEntry(

@@ -17,7 +17,6 @@ class AdminListPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCustomer = ref.watch(selectedCustomerProvider);
     final adminCode = ref.watch(adminCodeProvider);
-    final editMode = ref.watch(editModeProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('고객 목록'),
