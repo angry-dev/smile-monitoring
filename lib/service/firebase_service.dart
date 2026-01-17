@@ -185,4 +185,43 @@ class FirebaseService {
       await docRef.update(updatedData);
     }
   }
+
+  /// admins 컬렉션 하위 모든 문서의 데이터를 반환
+  /// admins 컬렉션 하위 모든 문서 id 반환
+  Future<List<String>> getAllAdminsDocumentIds() async {
+    final snapshot = await _firestore.collection('admins').get();
+    return snapshot.docs.map((doc) => doc.id).toList();
+  }
+
+  /// admins 컬렉션 하위 모든 문서의 id, code, name 필드를 리스트로 반환
+  Future<List<Map<String, dynamic>>> getAllAdminsCodeAndNameList() async {
+    final snapshot = await _firestore.collection('admins').get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return {
+        'id': doc.id,
+        'code': data['code'] ?? doc.id,
+        'name': data['name'] ?? '',
+      };
+    }).toList();
+  }
+
+  /// 이름과 코드를 입력받아 admins/{code} 문서를 생성하고 name, code 필드를 저장하며,
+  /// customers 서브컬렉션을 생성하는 메서드
+  Future<void> createAdminWithCustomersCollection({
+    required String code,
+    required String name,
+  }) async {
+    final adminDocRef = _firestore.collection('admins').doc(code);
+    // 문서 생성 (name, code 필드)
+    await adminDocRef.set({
+      'name': name,
+      'code': code,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    // customers 서브컬렉션에 더미 문서 하나 생성 (Firestore는 서브컬렉션에 문서가 없으면 컬렉션이 보이지 않음)
+    final customersColRef = adminDocRef.collection('customers');
+    await customersColRef.doc('_init').set({'init': true});
+    // 필요시 _init 문서는 나중에 삭제 가능
+  }
 }

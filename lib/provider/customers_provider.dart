@@ -1,3 +1,5 @@
+import 'package:flutter_app/service/firebase_service.dart';
+
 import '../model/customer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,6 +36,10 @@ final customersProvider =
   return custListRaw
       .map((e) => Customer.fromMap(Map<String, dynamic>.from(e)))
       .toList();
+});
+
+final adminsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
+  return FirebaseService().getAllAdminsCodeAndNameList();
 });
 
 final searchBrokerTextProvider = StateProvider<String>((ref) => '');

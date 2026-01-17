@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/provider/customers_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -65,11 +66,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           code; // Provider에 adminCode 세팅
       await AppPrefs.setLoginRole('admin');
       await AppPrefs.setAdminCode(code);
-      // final prefs = await SharedPreferences.getInstance();
-      // await prefs.remove('broker_code');
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const AdminHomePage()),
+        MaterialPageRoute(builder: (context) => const AdminHomeNavWrapper()),
       );
     } else {
       final userCodes =
