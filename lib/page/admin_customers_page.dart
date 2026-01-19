@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/page/customer_list_page.dart';
 import 'package:flutter_app/service/firebase_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -89,6 +90,17 @@ class _AdminCustomersPageState extends State<AdminCustomersPage> {
                                   fontWeight: FontWeight.w500)),
                           subtitle:
                               Text('고객 코드', style: TextStyle(fontSize: 11.sp)),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => CustomerListPage(
+                                  documentPath:
+                                      'admins/${widget.adminCode}/customers/$id',
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       );
                     },

@@ -7,6 +7,7 @@ import '../model/broker.dart';
 
 /// 관리자 코드 상태관리 Provider
 final adminCodeProvider = StateProvider<String?>((ref) => null);
+final brokerCodeProvider = StateProvider<String?>((ref) => null);
 
 final brokersProvider = FutureProvider<List<Broker>>((ref) async {
   final adminCode = ref.watch(adminCodeProvider);

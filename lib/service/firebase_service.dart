@@ -140,8 +140,15 @@ class FirebaseService {
   }
 
   /// code가 문서 id인 문서의 cust_list 필드를 실시간 스트림으로 반환
-  Stream<List<Map<String, dynamic>>> getCustListStreamByUserCode(String code) {
-    return _firestore.collection('customers').doc(code).snapshots().map((doc) {
+  Stream<List<Map<String, dynamic>>> getCustListStreamByUserCode(
+      String adminCode, String code) {
+    return _firestore
+        .collection('admins')
+        .doc(adminCode)
+        .collection('customers')
+        .doc(code)
+        .snapshots()
+        .map((doc) {
       final data = doc.data();
       if (data != null && data['cust_list'] is List) {
         return List<Map<String, dynamic>>.from(data['cust_list']);
@@ -265,6 +272,31 @@ class FirebaseService {
     await _firestore.collection('admins').doc(oldAdminCode).delete();
   }
 
+  Future<void> updateAllFieldInCollection({
+    required String collectionPath,
+    required String field,
+    required dynamic newValue,
+  }) async {
+    final collection = FirebaseFirestore.instance.collection(collectionPath);
+    final snapshot = await collection.get();
+    for (final doc in snapshot.docs) {
+      await doc.reference.update({field: newValue});
+    }
+  }
+
+  /// 특정 경로의 cust_list 필드만 반환
+  Future<List<Map<String, dynamic>>> getCustListByDocumentPath(
+      String documentPath) async {
+    final doc = await _firestore.doc(documentPath).get();
+    if (doc.exists) {
+      final data = doc.data();
+      if (data != null && data['cust_list'] is List) {
+        return List<Map<String, dynamic>>.from(data['cust_list']);
+      }
+    }
+    return [];
+  }
+
   /// 직원 삭제
   /// 해당 직원의 customers 서브컬렉션도 모두 삭제
   /// 주의: 이 작업은 되돌릴 수 없습니다.
@@ -278,5 +310,27 @@ class FirebaseService {
       await doc.reference.delete();
     }
     await adminDocRef.delete();
+  }
+
+  /// userCode로 adminCode 조회
+  Future<String?> getAdminCodeByUserCode(String userCode) async {
+    final code = userCode.trim();
+    if (code.isEmpty) return null;
+
+    final qs = await FirebaseFirestore.instance
+        .collectionGroup('customers')
+        .where('code', isEqualTo: code)
+        .limit(1)
+        .get();
+
+    if (qs.docs.isEmpty) return null;
+
+    final data = qs.docs.first.data();
+
+    // 경로 출력
+    print(
+        '[getAdminCodeByUserCode] Document path: ${qs.docs.first.reference.path}');
+
+    return data['adminCode'] as String?;
   }
 }

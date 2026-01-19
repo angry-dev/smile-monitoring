@@ -235,6 +235,13 @@ class WorkerRegPage extends ConsumerWidget {
                                 code: newCode,
                                 name: newName,
                               );
+
+                              await FirebaseService()
+                                  .updateAllFieldInCollection(
+                                collectionPath: 'admins/$newCode/customers',
+                                field: 'adminCode',
+                                newValue: newCode,
+                              );
                               // 4. 갱신
                               if (context.mounted) {
                                 Navigator.of(context).pop();
