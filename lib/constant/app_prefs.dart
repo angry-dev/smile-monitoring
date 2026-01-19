@@ -35,4 +35,9 @@ class AppPrefs {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('admin_code');
   }
+
+  static Future<String?> getBrokerCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('broker_code');
+  }
 }

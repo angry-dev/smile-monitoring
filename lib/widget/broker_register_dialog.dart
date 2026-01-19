@@ -23,7 +23,7 @@ class BrokerRegisterDialog extends ConsumerWidget {
     final adminCode = ref.watch(adminCodeProvider);
 
     return AlertDialog(
-      title: const Text('고객 등록12'),
+      title: const Text('고객 등록'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

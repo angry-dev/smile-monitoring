@@ -76,10 +76,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         debugPrint('[login] 사용자 로그인 성공, userCode: $code');
         notifier.state = LoginState.user;
         errorNotifier.state = null;
-        FirebaseService().getAdminCodeByUserCode(code).then((adminCode) {
+        FirebaseService().getAdminCodeByUserCode(code).then((adminCode) async {
           if (adminCode != null) {
             ref.read(adminCodeProvider.notifier).state = adminCode;
             ref.read(brokerCodeProvider.notifier).state = code;
+
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('admin_code', adminCode);
           }
         });
         await AppPrefs.setLoginRole('user');

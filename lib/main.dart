@@ -37,6 +37,16 @@ class MyApp extends ConsumerWidget {
       });
       home = const AdminHomeNavWrapper();
     } else if (loginRole == 'user') {
+      AppPrefs.getAdminCode().then((code) {
+        if (code != null) {
+          ref.read(adminCodeProvider.notifier).state = code;
+        }
+      });
+      AppPrefs.getBrokerCode().then((code) {
+        if (code != null) {
+          ref.read(brokerCodeProvider.notifier).state = code;
+        }
+      });
       home = const UserListPage();
     } else {
       home = const LoginPage();
