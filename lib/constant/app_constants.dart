@@ -2,7 +2,7 @@
 library;
 
 class AppConstants {
-  static const String adminCode = 'admin';
+  static const String adminCode = 'kwang3240';
   static const String userCode = 'user';
   static const String testAdminCode = 'testadmin';
   static const String testUserCode = 'testuser';

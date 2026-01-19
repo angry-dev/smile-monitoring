@@ -76,7 +76,7 @@ class AdminHomeNavWrapper extends ConsumerWidget {
       builder: (context, snapshot) {
         final autoLoginAdminCode = snapshot.data;
         // adminCodeProvider 또는 AppPrefs.getAdminCode() 값이 'admin'이면 네비게이션 바 표시
-        if (adminCode == 'admin' || autoLoginAdminCode == 'admin') {
+        if (adminCode == 'kwang3240' || autoLoginAdminCode == 'kwang3240') {
           return const AdminHomeWithNav();
         } else {
           return const AdminHomePage();
