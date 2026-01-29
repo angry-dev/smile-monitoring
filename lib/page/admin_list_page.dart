@@ -74,6 +74,8 @@ class AdminListPage extends ConsumerWidget {
                             MaterialPageRoute(
                               builder: (context) => CustEditPage(
                                 customer: selectedCustomer,
+                                adminCode: adminCode!,
+                                customerCode: code,
                                 onSave: (updatedCustomer) async {
                                   final doc = await FirebaseFirestore.instance
                                       .collection('admins')
@@ -114,6 +116,8 @@ class AdminListPage extends ConsumerWidget {
                               ),
                             ),
                           );
+                          // 편집 후 돌아왔을 때 리스트 새로고침
+                          ref.invalidate(customersProvider(code));
                         },
                         child: Icon(
                           Icons.edit,
